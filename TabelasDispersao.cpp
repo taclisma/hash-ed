@@ -1,9 +1,9 @@
-
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h> 
 #include <stdlib.h>
 #include <string.h>
+#include "lista.h"
 
 #define N 200
 
@@ -12,13 +12,12 @@ struct aluno {
 	int mat;
 	char nome[81];
 };
-typedef struct aluno Aluno;
+typedef struct list Aluno;
 
-typedef Aluno* Hash[N];
+typedef list* Hash[N];
 
 
-int hash (int mat)
-{
+int hash (int mat){
 	return (mat%100);
 }
 
@@ -29,8 +28,7 @@ int hash2 (int mat)
 }
 
 
-Aluno* busca (Hash tab, int mat)
-{
+Aluno* busca (Hash tab, int mat){
 	int cont = 0;
 
 	int h = hash(mat);
@@ -66,8 +64,7 @@ Aluno* busca2 (Hash tab, int mat)
 }
 
 
-int insere (Hash tab, int mat, char* nome)
-{
+int insere (Hash tab, int mat, char* nome){
 	int h = hash(mat);
 	while (tab[h] != NULL) {
 		if (tab[h]->mat == mat) //Se matricula Igual, atualiza os dados
@@ -83,23 +80,28 @@ int insere (Hash tab, int mat, char* nome)
 	return h;
 }
 
-int insere2 (Hash tab, int mat, char* nome)//, char* email, char turma)
-{                  
+int insere2 (Hash tab, int mat, char* nome){//, char* email, char turma){                  
 	int h = hash(mat);
 	int h2 = hash2(mat);
+
 	while (tab[h] != NULL) {
 		if (tab[h]->mat == mat) //Se matricula Igual, atualiza os dados
 			break;
-			h = (h+h2) % N;
+		//h = (h+h2) % N; //insert em lista
+		if(tab[h]->lista == NULL){
+			tab[h]->lista = init(); //inicia lista
+
+		}
 	}
 
-	if (tab[h]==NULL) { /* nï¿½o encontrou o elemento */
+	if (tab[h]==NULL) { /* nao encontrou o elemento */
 		tab[h] = (Aluno*) malloc(sizeof(Aluno));
 		tab[h]->mat = mat;
+		tab[h]->lista = NULL; // ponteiro p/ lista
 		//printf("\n\ttabh %d", tab[h]->mat);
 	}
 	
-	/* atribui informaï¿½ï¿½o */
+	/* atribui informacao */
 	strcpy(tab[h]->nome,nome);
 	return h;
 }
@@ -133,7 +135,7 @@ int main(){
 			
 			while (!feof(txt)){
 				fscanf(txt, "%d\t %[^\n]s ", &aux_mat, aux_nome);
-				printf("\nMat...: %d", aux_mat \nNome..: %s", aux_nome);
+				printf("\nMat...: %d", aux_mat \nNome..: %s, aux_nome);
 				hashed = insere2(dados, aux_mat, aux_nome);
 				fprintf(txt2, "%i \n", hashed);
 			}
@@ -146,32 +148,4 @@ int main(){
 		
 	}
 
-
-
-	// while (true){
-	// 	printf("digite matricula para buscar:\n  =>");
-	// 	scanf("%i",&mat );
-	// 	getchar(); 
-	// 	busca(dados, mat);
-	// }
-
-	
-	 //Mostra
-	//  for(int i = 0; i < N; i++)
-	//  {
-	//    	if (dados[i]!= NULL) 
-	//    	{
-	// 	 	    printf("\n------------------------");
-	// 			printf("\nIndice: %d", i);
-	// 			printf("\nMat...: %d", dados[i]->mat);
-	// 			printf("\nNome..: %s", dados[i]->nome);
-	// 		//	printf("\nemail.: %s", dados[i]->email);
-	// 		//	printf("\nTurma.: %c", dados[i]->turma);
-	// 	}
-	// }
-
-
-	return 0;
-}
-	 
- 
+	return 0; 
