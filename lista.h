@@ -4,19 +4,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#define N 200
+
+struct aluno {
+	int mat;
+	char nome[81];
+};
+typedef struct aluno Aluno;
 
 
 typedef struct node{
-    int dado;
     struct node *next;
+    Aluno *aluno;
  } node;
 
 typedef struct list{
     node *start;
     node *end;
-    Aluno *aluno
 } list;
 
+typedef list *Hash[N];
 
 //cria lista
 list* init(){
@@ -26,6 +33,7 @@ list* init(){
         lista->end = NULL;
         return lista;
     }
+    return NULL;
 }
 
 
@@ -35,7 +43,7 @@ bool empty(list *l){
 }
 
 
-bool insert(list* l, int d){
+bool insert(list* l, Aluno* a){
     node *aux = l->start;
     node *newnode; 
 
@@ -43,7 +51,7 @@ bool insert(list* l, int d){
     newnode = (node*) malloc(sizeof(node));
     if(!newnode) return false;
     newnode->next = NULL;
-    newnode->dado = d;
+    newnode->aluno = a;
 
     // insere no inicio
     if(!l->start){ //funciona
@@ -68,19 +76,18 @@ bool insert(list* l, int d){
 }
 
 
-// imprime lista
-void printlist(list *l){
-    node *aux = l->start;
-
-    if(empty(l)){
-        printf("lista vazia\n");
-    } else {
-        while(aux != NULL){
-            printf("%i\n", aux->dado);
-            aux = aux->next;;
-        }
-    }
-}
+// // imprime lista
+// void printlist(list *l){
+//     node *aux = l->start;
+//     if(empty(l)){
+//         printf("lista vazia\n");
+//     } else {
+//         while(aux != NULL){
+//             printf("%i\n", aux->aluno);
+//             aux = aux->next;;
+//         }
+//     }
+// }
 
 
 //limpa lista
@@ -92,5 +99,22 @@ void cleanlist(list *l){
         aux = aux2;
     }
 }
+
+
+// busca em lista
+Aluno* lista_busca(list *l, int m){
+    node *aux = NULL;
+    
+    if (l->start != NULL){
+        aux = l->start;
+        while(aux != NULL){
+            if(aux->aluno->mat == m) return aux->aluno;
+            
+            aux = aux->next;
+        }
+    }
+        return NULL;
+}
+
 
 #endif
