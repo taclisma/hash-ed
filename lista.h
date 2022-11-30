@@ -6,16 +6,19 @@
 #include <stdbool.h>
 #define N 200
 
-struct aluno {
-	int mat;
+struct cidade {
+	char uf[3];
+	int coduf;
+	int codmun;
 	char nome[81];
+    int pop;
 };
-typedef struct aluno Aluno;
+typedef struct cidade Cidade;
 
 
 typedef struct node{
     struct node *next;
-    Aluno *aluno;
+    Cidade *cidade;
  } node;
 
 typedef struct list{
@@ -43,7 +46,7 @@ bool empty(list *l){
 }
 
 
-bool insert(list* l, Aluno* a){
+bool insert(list* l, Cidade* a){
     node *aux = l->start;
     node *newnode; 
 
@@ -51,7 +54,7 @@ bool insert(list* l, Aluno* a){
     newnode = (node*) malloc(sizeof(node));
     if(!newnode) return false;
     newnode->next = NULL;
-    newnode->aluno = a;
+    newnode->cidade = a;
 
     // insere no inicio
     if(!l->start){ //funciona
@@ -83,7 +86,7 @@ bool insert(list* l, Aluno* a){
 //         printf("lista vazia\n");
 //     } else {
 //         while(aux != NULL){
-//             printf("%i\n", aux->aluno);
+//             printf("%i\n", aux->cidade);
 //             aux = aux->next;;
 //         }
 //     }
@@ -101,20 +104,7 @@ void cleanlist(list *l){
 }
 
 
-// busca em lista
-Aluno* lista_busca(list *l, int m){
-    node *aux = NULL;
-    
-    if (l->start != NULL){
-        aux = l->start;
-        while(aux != NULL){
-            if(aux->aluno->mat == m) return aux->aluno;
-            
-            aux = aux->next;
-        }
-    }
-        return NULL;
-}
+
 
 
 #endif

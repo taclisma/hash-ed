@@ -5,7 +5,8 @@
 #include <string.h>
 #include "lista.h"
 
-#define N 200
+#define MAXCHAR 81
+#define N 5580
 
 
 int hash (int mat){
@@ -19,7 +20,7 @@ int hash2 (int mat)
 }
 
 
-// Aluno* busca (Hash tab, int mat){
+// Cidade* busca (Hash tab, int mat){
 // 	int cont = 0;
 // 	int h = hash(mat);
 // 	while (tab[h] != NULL) {
@@ -34,32 +35,35 @@ int hash2 (int mat)
 // }
 
 
-// Aluno* busca2 (Hash tab, int mat)
-// {
-// 	int cont = 0;	
-// 	int h = hash(mat);
-// 	int h2 = hash2(mat);
-// 	while (tab[h] != NULL) {
-// 		cont++;
-// 		if (tab[h]->mat == mat){
-// 			printf("\n\t %i \n", cont);
-// 			return tab[h];
-// 		}
-// 		h = (h+h2) % N;
-// 	}
-// 	return NULL;
-// }
+Cidade* busca2 (Hash tab, int mat){
+	int cont = 0;	
+	int h2 = hash2(mat);
+	node *aux = NULL;
+
+	if (tab[h2] != NULL) {
+		aux = tab[h2]->start;
+		while (aux != NULL){
+			cont++;
+			printf("\t %i \n", cont);
+			if (aux->cidade->mat == mat) {
+				return aux->cidade;
+			}
+			aux = aux->next;
+		}
+	}
+	return NULL;
+}
 
 
 // int insere (Hash tab, int mat, char* nome){
 // 	int h = hash(mat);
 // 	while (tab[h] != NULL) {
-// 		if (tab[h]->start->aluno->mat == mat) //Se matricula Igual, atualiza os dados
+// 		if (tab[h]->start->cidade->mat == mat) //Se matricula Igual, atualiza os dados
 // 			break;
 // 		h = (h+1) % N;
 // 	}
 // 		if (tab[h]==NULL) { /* nï¿½o encontrou o elemento */
-// 		tab[h] = (Aluno*) malloc(sizeof(Aluno));
+// 		tab[h] = (Cidade*) malloc(sizeof(Cidade));
 // 		tab[h]->mat = mat;
 // 	}
 // 	/* atribui informaï¿½ï¿½o */
@@ -68,13 +72,13 @@ int hash2 (int mat)
 // }
 
 
-int insere2 (Hash tab, int mat, char* nome){//, char* email, char turma){                  
-	int h = hash2(mat);
+int insere2 (Hash tab, Cidade auxc){//, char* email, char turma){                  
+	int h = hash2(auxc.codmun);
 	node *aux = NULL;
-	Aluno *newdata = NULL;
+	Cidade *newdata = NULL;
 
 	while(aux != NULL) {
-		if (aux->aluno->mat == mat){ //Se matricula Igual sai do loop
+		if (aux->cidade == auxc.codmun){ //Se matricula Igual sai do loop
 		return -1;
 		}
 
@@ -88,7 +92,7 @@ int insere2 (Hash tab, int mat, char* nome){//, char* email, char turma){
 	}
 	aux = tab[h]->start;
 	/* atribui informacao */		
-	newdata = (Aluno*) malloc(sizeof(Aluno));
+	newdata = (Cidade*) malloc(sizeof(Cidade));
 	newdata->mat = mat;
 	strcpy(newdata->nome, nome);
 	insert(tab[h], newdata);
@@ -97,34 +101,105 @@ int insere2 (Hash tab, int mat, char* nome){//, char* email, char turma){
 	return h;
 }
 
+// busca em lista
+Cidade* lista_busca(list *l, int m){
+	int cont = 0;	
+
+    node *aux = NULL;
+    
+    if (l->start != NULL){
+        aux = l->start;
+        while(aux != NULL){
+            if(aux->cidade->mat == m) return aux->cidade;
+            
+            aux = aux->next;
+        }
+    }
+        return NULL;
+}
+
+void print_cidade(Cidade *a){
+	if (a != NULL){
+		printf("nome: "); 
+		puts(a->nome);
+		printf("\n"); 
+		printf("matricula: %d", a->mat); 
+		printf("\n");	
+	} else {
+		printf("\nnao encontrado\n");
+	}
+}
+
+
+
+
+
 
 int main(){
-	int aux_mat = 0;
+	char header[5][31];
+	int flag = 0;
 	int hashed = 0;
-	char aux_nome[81];
-	
+	char row[MAXCHAR];
+	char *col = NULL;
+
+	Cidade *auxc = NULL;
 	Hash  dados; 
-	FILE *txt;
+	FILE *csv;
 
 	//Inicializando
 	for(int i = 0; i < N; i++)
 		dados[i] = NULL;
 
 	// le arq de dados
-	if((txt = fopen("dados.txt","r")) == NULL){
+	if((csv = fopen("muni.csv","r")) == NULL){
 		printf("Erro ao abrir arquivo");
 	} else {
 		
 		printf("carregando arquivo");
 		
-		while (!feof(txt)){
-			fscanf(txt, "%d\t %[^\n]s ", &aux_mat, aux_nome);
-			printf("\nMat...: %d\nNome..: %s", aux_mat, aux_nome);
-			insere2(dados, aux_mat, aux_nome);
+		while (!feof(csv)){
+			fgets(row, MAXCHAR, csv);
+			col = strtok(row, ";");
+
+		//navega strtok
+			while (col != NULL){
+			//flag p pegar header
+				if(!flag){
+					for(int i = 0; i < 5; i++){
+						strcpy(header[i], col);
+						col = strtok(NULL,";");
+					}
+					flag = 1;
+				
+			// salva dados no auxiliar
+				} else {
+					strcpy(auxc->uf,col);
+					col = strtok(NULL,";");
+					
+					auxc->coduf = atoi(col);
+					col = strtok(NULL,";");
+					
+					auxc->codmun = atoi(col);
+					col = strtok(NULL,";");
+					
+					strcpy(auxc->nome,col);
+					col = strtok(NULL,";");
+
+					auxc->pop = atoi(col);
+					col = strtok(NULL,";");
+				}
+			}
+
+			// insere
+			insere2(dados, auxc);
 		}
-		fclose(txt);
+		fclose(csv);
 		
 		printf("\narquivo carregado\n");
+
+		print_cidade(busca2(dados, 1010));
+		print_cidade(busca2(dados, 2010));
+		print_cidade(busca2(dados, 100));
 
 	}
 
