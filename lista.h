@@ -4,13 +4,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#define N 200
+#define N 5580
 
 struct cidade {
 	char uf[3];
 	int coduf;
 	int codmun;
-	char nome[81];
+	char nome[31];
     int pop;
 };
 typedef struct cidade Cidade;
