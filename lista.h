@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#define N 5580
+#define N 8000
 
 struct cidade {
 	char uf[3];

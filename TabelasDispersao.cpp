@@ -6,7 +6,7 @@
 #include "lista.h"
 
 #define MAXCHAR 81
-#define N 5580
+#define N 8000
 
 
 int hash2 (int mat)
@@ -46,7 +46,7 @@ int insere2 (Hash tab, Cidade auxc){//, char* email, char turma){
 		while (aux != NULL){
 			
 			if (aux->cidade->codmun == auxc.codmun){ //Se matricula Igual sai do loop
-				return -1;
+				break;
 			}
 
 			aux = aux->next; //se não, prox
@@ -72,19 +72,6 @@ int insere2 (Hash tab, Cidade auxc){//, char* email, char turma){
 	return h;
 }
 
-// busca em lista
-// Cidade* lista_busca(list *l, int m){
-// 	int cont = 0;	
-//     node *aux = NULL;
-//     if (l->start != NULL){
-//         aux = l->start;
-//         while(aux != NULL){
-//             if(aux->cidade->mat == m) return aux->cidade;       
-//             aux = aux->next;
-//         }
-//     }
-//         return NULL;
-// }
 
 void print_cidade(Cidade *a){
 	if (a != NULL){
@@ -109,71 +96,79 @@ int main(){
 	Cidade auxc;
 	Hash  dados; 
 	FILE *csv;
+	FILE *ind;
 
 	//Inicializando
 	for(int i = 0; i < N; i++)
 		dados[i] = NULL;
 	
-
-	// le arq de dados
-	if((csv = fopen("muni.csv","r")) == NULL){
-		printf("Erro ao abrir arquivo");
+	if((ind = fopen("ind.txt", "w")) == NULL){
+		printf("Erro ao abrir arquivo indice");
 	} else {
-		
-		printf("carregando arquivo");
-		
-		while (fgets(row, MAXCHAR, csv)){
-			fgets(row, MAXCHAR, csv);
-			col = strtok(row, ";");
-		//navega strtok
-			while (col != NULL){
-			//flag p pegar header
-				if(!flag){
-					for(int i = 0; i < 5; i++){
-						strcpy(header[i], col);
+		// le arq de dados
+		if((csv = fopen("muni.csv","r")) == NULL){
+			printf("Erro ao abrir arquivo dados");
+
+		} else {
+			
+			printf("carregando arquivo");
+			
+			while (fgets(row, MAXCHAR, csv)){
+				fgets(row, MAXCHAR, csv);
+				col = strtok(row, ";");
+			//navega strtok
+				while (col != NULL){
+				//flag p pegar header
+					if(!flag){
+						for(int i = 0; i < 5; i++){
+							strcpy(header[i], col);
+							col = strtok(NULL,";");
+						}
+						flag = 1;
+					
+				// salva dados no auxiliar
+					} else {
+						
+						printf("col p uf: %s\n", col);
+						strcpy(auxc.uf,col);
+						col = strtok(NULL,";");
+						
+						printf("col p coduf: %s\n", col);
+						auxc.coduf = atoi(col);
+						col = strtok(NULL,";");
+						
+						printf("col p codmun: %s\n", col);
+						auxc.codmun = atoi(col);
+						col = strtok(NULL,";");
+						
+						printf("col p nome: %s\n", col);
+						strcpy(auxc.nome,col);
+						col = strtok(NULL,";");
+
+						printf("col p pop: %s\n", col);
+						auxc.pop = atoi(col);
+						//getchar();
+
+						// insere
+						fprintf(ind, "%i\n", auxc.codmun);
+						insere2(dados, auxc);
+
+						// sai
 						col = strtok(NULL,";");
 					}
-					flag = 1;
-				
-			// salva dados no auxiliar
-				} else {
-					
-					printf("col p uf: %s\n", col);
-					strcpy(auxc.uf,col);
-					col = strtok(NULL,";");
-					
-					printf("col p coduf: %s\n", col);
-					auxc.coduf = atoi(col);
-					col = strtok(NULL,";");
-					
-					printf("col p codmun: %s\n", col);
-					auxc.codmun = atoi(col);
-					col = strtok(NULL,";");
-					
-					printf("col p nome: %s\n", col);
-					strcpy(auxc.nome,col);
-					col = strtok(NULL,";");
-
-					printf("col p pop: %s\n", col);
-					auxc.pop = atoi(col);
-					//getchar();
-
-					// insere
-					insere2(dados, auxc);
-
-					// sai
-					col = strtok(NULL,";");
 				}
-			}
 
-		}
-		fclose(csv);
+			} // while / fim do arq dados 
+
+			fclose(csv);
 		
+		} // fecha arq indice
+		fclose(ind);
 		printf("\narquivo carregado\n");
 
 		print_cidade(busca2(dados, 14209)); //cod mun pedrosorio
 		print_cidade(busca2(dados, 14407)); //cod mun pelotas
-		print_cidade(busca2(dados, 100000));
+		print_cidade(busca2(dados, 100000)); // n existe
 
 	}
 
