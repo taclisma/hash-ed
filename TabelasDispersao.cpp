@@ -6,7 +6,7 @@
 #include "lista.h"
 
 #define MAXCHAR 81
-#define N 8000
+#define N 7500
 
 
 int hash2 (int mat, int uf){
@@ -202,6 +202,8 @@ int main(){
 	insere2(dados, auxc);
 	print_cidade(busca2(dados, auxc.codmun, auxc.coduf)); //n existe
 
+	printf("sizeof cidade: %lu", sizeof(Cidade));
+	printf("\nsizeof Hash: %lu", sizeof(Hash));
 
 	return 0; 
 }
