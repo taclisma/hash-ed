@@ -6,8 +6,40 @@
 #include "lista.h"
 
 #define MAXCHAR 81
-#define N 7500
+#define N 8500
 
+/*
+//	5) Responder as seguintes perguntas:
+//		a) Qual foi (ou foram) o(s) registro(s) com maior número de acessos.  (3,0 pontos) 
+//			de acordo com log.csv
+//			UF  Cod. M. 	Nome				Hash	Acessos
+// 			24	8102		Natal				7850	5
+// 			24	8300		Nova Cruz			7652	5
+// 			24	9803		Pedro Velho			6149	5
+// 			29	8101		Cocos				7841	5
+// 			33	225			Areal				7742	5
+// 			42	18806		Turvo				5068	5
+// 			51	7958		Tangara da Serra	7940	5
+// 			51	8956		Nova Monte Verde	6942	5
+//			
+//						
+//		b) Qual é o tamanho da estrutura (número de posições). Explique o motivo da escolha. (3,0 pontos)
+//				(7000 -> 16 registros 6 acessos e media de acessos 1,5)
+//				(7500 -> 4 registros 6 acessos e media de acessos 1,4)
+//				(8000 -> 0 registros 6 acessos, 8 registros de 5 acessos e media de acessos 1,35)
+//				(8500 -> 10 registros 6 acessos e media de acessos 1,4 )
+//
+//
+//		c) Qual é o tamanho da Estrutura da Tabela de Dispersão em Memória? (1,0 ponto)
+//				sizeof cidade: 48
+//				sizeof Hash: 68000
+//
+//
+//		d) Insira um novo Registro: (Código 6000, Município "Novo Registro", RS, População 6.000). Onde foi inserido e qual é a quantidade de acessos para esse novo registro? (3,0 Pontos).
+//				UF  Cod. M. 	Nome			Hash	Acessos
+//				43	6000		Novo Registro	2457	1
+//
+*/
 
 int hash2 (int mat, int uf){
 	return N - uf - mat%(N - uf);
@@ -83,7 +115,7 @@ void print_cidade(Cidade *a){
 	if (a != NULL){
 		printf("nome da cidade: "); 
 		puts(a->nome);
-		printf(""); 
+		printf("\n"); 
 		printf("populaçao: %i", a->pop); 
 		printf("\n");	
 	} else {
@@ -191,19 +223,24 @@ int main(){
 	}
 	fclose(busca);
 	getchar();
-	// Insira um novo Registro: (Código 6000, Município "Novo Registro", RS, População 6.000). 
-	// Onde foi inserido e qual é a quantidade de acessos para esse novo registro? 
 
+	// Insira um novo Registro: (Código 6000, Município "Novo Registro", RS, População 6.000). 
 	strcpy(auxc.uf,"RS");
 	auxc.coduf = 43;
 	auxc.codmun = 6000;
 	strcpy(auxc.nome,"Novo Registro");
 	auxc.pop = 6000;
 	insere2(dados, auxc);
-	print_cidade(busca2(dados, auxc.codmun, auxc.coduf)); //n existe
+
+	print_cidade(busca2(dados, auxc.codmun, auxc.coduf));
 
 	printf("sizeof cidade: %lu", sizeof(Cidade));
-	printf("\nsizeof Hash: %lu", sizeof(Hash));
+	printf("\nsizeof Hash: %lu \n", sizeof(Hash));
+
+	for(int i = 0; i < N; i++){
+		if (dados[i] != NULL)
+			cleanlist(dados[i]);
+	}
 
 	return 0; 
 }
